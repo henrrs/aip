@@ -31,6 +31,6 @@ cd google-cloud-sdk
 
 ## How it works
 
-For GCP features you need to generate a service account key(https://cloud.google.com/iam/docs/creating-managing-service-account-keys) with the necessary roles for the tool authentication with the provider. 
+For GCP features you need to generate a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) with the necessary roles for the tool authentication with the provider. 
 
 1. 
