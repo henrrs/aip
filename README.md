@@ -54,10 +54,10 @@ export GOOGLE_APPLICATION_CREDENTIALS=$PWD/your-service-key.json
     .
     ├── pkg                     
     │   ├── cmd   
-    |   |   ├── google
-    |   |       ├── create
+    |   |   └── google
+    |   |       └── create
     │   ├── services     
-    |   |   ├── google
+    |   |   └── google
     |   |       ├── cloudbuild
     |   |       ├── sourcerepo
     |   |       └── ...
