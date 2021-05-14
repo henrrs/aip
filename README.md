@@ -52,9 +52,14 @@ export GOOGLE_APPLICATION_CREDENTIALS=$PWD/your-service-key.json
 ## :white_check_mark: Project Structure
 
     .
-    ├── ...
-    ├── test                    # Test files (alternatively `spec` or `tests`)
-    │   ├── benchmarks          # Load and stress tests
-    │   ├── integration         # End-to-end, integration tests (alternatively `e2e`)
-    │   └── unit                # Unit tests
+    ├── pkg                     
+    │   ├── cmd   
+    |   |   ├── google
+    |   |       ├── create
+    │   ├── services     
+    |   |   ├── google
+    |   |       ├── cloudbuild
+    |   |       ├── sourcerepo
+    |   |       └── ...
+    │   └── utils                
     └── ...
