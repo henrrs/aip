@@ -5,8 +5,8 @@ Automating Infrastructure Provisioning (AIP) it's a CLI tool been developet it i
 
 | <!-- --> | <!-- --> | 
 --------------- |  ---------------
-First Launch:   | **2021-04-02**    
-Last Revision:  | **2021-04-02**    
+First Launch:   | **2021-05-16**    
+Last Revision:  | **2021-05-16**    
 Version:        | **1.0**
 
 ## Requirements
