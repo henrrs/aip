@@ -1,2 +1,2 @@
-# aip
+# AIP
 Automating Infrastructure Provisioning
