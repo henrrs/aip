@@ -26,4 +26,4 @@ cd google-cloud-sdk
 
 ## Features
 
-[x] Continuous Integration and Continuous Delivery (CI/CD) Pipeline creation
+- [x] Continuous Integration and Continuous Delivery (CI/CD) Pipeline creation
