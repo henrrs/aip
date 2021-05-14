@@ -40,3 +40,6 @@ export GOOGLE_APPLICATION_CREDENTIALS=$PWD/your-service-key.json
 ```
 
 ## :white_check_mark: Usage example
+
+
+## :white_check_mark: Project Structure
