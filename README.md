@@ -1,6 +1,7 @@
 # :gear: AIP
 
 ![](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
 
 ## :white_check_mark: About
 Automating Infrastructure Provisioning (AIP) it's a CLI tool that is been developed in Go for automating infrastructure provisioning in different cloud providers. At the first moment I'll only be developing features to automate Google Cloud Platform (GCP) infrastructure but the project was structure so anyone can contribute developing features to others providers as your need.
