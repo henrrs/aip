@@ -25,3 +25,5 @@ cd google-cloud-sdk
 2. [Git](https://git-scm.com/about)
 
 ## Features
+
+[x] Continuous Integration and Continuous Delivery (CI/CD) Pipeline creation
