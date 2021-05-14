@@ -11,7 +11,7 @@ Version:        | **1.0**
 
 ## :white_check_mark: Requirements
 
-1. [Cloud SDK (gcloud)](https://cloud.google.com/sdk)
+1. [Cloud SDK](https://cloud.google.com/sdk)
 
 ```bash
 sudo apt-get update
