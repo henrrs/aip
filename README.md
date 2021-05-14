@@ -22,5 +22,6 @@ cd google-cloud-sdk
 
 ```
 
+2. [Git](https://git-scm.com/about)
 
 ## Features
