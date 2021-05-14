@@ -38,3 +38,5 @@ For GCP features you need to generate a [service account key](https://cloud.goog
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=$PWD/your-service-key.json
 ```
+
+## Usage example
