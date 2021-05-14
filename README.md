@@ -11,7 +11,7 @@ Version:        | **1.0**
 
 ## Requirements
 
-1. [gcloud](https://cloud.google.com/sdk)
+1. [Cloud SDK (gcloud)](https://cloud.google.com/sdk)
 
 ```bash
 sudo apt-get -y install curl ccze golang $(command -v awk &> /dev/null || echo awk)    
