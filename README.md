@@ -14,8 +14,12 @@ Version:        | **1.0**
 1. [Cloud SDK (gcloud)](https://cloud.google.com/sdk)
 
 ```bash
-sudo apt-get -y install curl ccze golang $(command -v awk &> /dev/null || echo awk)    
-sudo apt-get -y install kubecolor || go install github.com/dty1er/kubecolor/cmd/kubecolor@latest    
+sudo apt-get update
+wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-307.0.0-linux-x86_64.tar.gz
+tar –xvzf google-cloud-sdk-307.0.0-linux-x86_64.tar.gz
+cd google-cloud-sdk
+./install.sh
+
 ```
 
 
