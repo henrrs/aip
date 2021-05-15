@@ -45,13 +45,8 @@ Once it's finished it, your terminal window will display the following output on
 
 ![alt text](https://vitux.com/wp-content/uploads/word-image-1358.png)
 
-```diff
-@@- text in red @@
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
-```
+![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+
 2. [Git](https://git-scm.com/about)
 
 ## :white_check_mark: Features
