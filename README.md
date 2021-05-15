@@ -45,10 +45,6 @@ Once it's finished it, your terminal window will display the following output on
 
 ![alt text](https://vitux.com/wp-content/uploads/word-image-1358.png)
 
-```diff
-- Disclaimer: The above figures were remove it from [here](https://vitux.com/install-google-cloud-sdk-on-ubuntu/).
-```
-
 2. [Git](https://git-scm.com/about)
 
 ## :white_check_mark: Features
