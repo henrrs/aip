@@ -45,7 +45,7 @@ Once it's finished it, your terminal window will display the following output on
 
 ![alt text](https://vitux.com/wp-content/uploads/word-image-1358.png)
 
-- ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) `#f03c15`
+- ![#f03c15](Disclaimer:) `#f03c15`
 
 2. [Git](https://git-scm.com/about)
 
