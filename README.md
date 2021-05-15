@@ -35,6 +35,10 @@ cd google-cloud-sdk
 
 - [x] Continuous Integration and Continuous Deployment (CI/CD) Pipeline creation (GCP)
 
+## :white_check_mark: Pendency
+
+- [ ] Implement tests
+
 
 ## :white_check_mark: How it works
 
