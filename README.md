@@ -29,6 +29,12 @@ cd google-cloud-sdk
 
 ```
 
+After execute the above commands, it will appear the following question. Just type "N" in your terminal, as shown below:
+
+![alt text](https://vitux.com/wp-content/uploads/word-image-1355.png)
+
+
+
 2. [Git](https://git-scm.com/about)
 
 ## :white_check_mark: Features
