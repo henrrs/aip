@@ -46,7 +46,7 @@ Once it's finished it, your terminal window will display the following output on
 ![alt text](https://vitux.com/wp-content/uploads/word-image-1358.png)
 
 ```diff
-text in red
+@@- text in red @@
 + text in green
 ! text in orange
 # text in gray
