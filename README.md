@@ -33,7 +33,17 @@ After execute the above commands, it will appear the following question. Just ty
 
 ![alt text](https://vitux.com/wp-content/uploads/word-image-1355.png)
 
+After that you'll be asked to continue with the installation. Just type "Y" in your terminal, as shown below:
 
+![alt text](https://vitux.com/wp-content/uploads/word-image-1356.png)
+
+Here you'll be asked a path for bringing the Google Cloud CLIs into your enviroment. You can type your choosed path, but here we can just proceed with the default path pressing "enter", as shown below:
+
+![alt text](https://vitux.com/wp-content/uploads/word-image-1357.png)
+
+Once it's finished it, your terminal window will display the following output on it:
+
+![alt text](https://vitux.com/wp-content/uploads/word-image-1358.png)
 
 2. [Git](https://git-scm.com/about)
 
