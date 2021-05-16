@@ -1,0 +1,10 @@
+pipeline:
+    projectId: your-project-id
+    team:
+        - team-member@gmail.com
+    repository:
+        name: repository-name
+    trigger:
+        name: triggers name
+        description: a brief description for your trigger
+        branch: the branch that you want to trigger the build
