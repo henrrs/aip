@@ -67,7 +67,7 @@ And run as:
 aip google create ci-cd-pipeline -c="your-file.yaml" -p="your-file.yaml"
 ```
 
-The provided files can be in yaml and json format.
+The provided files can be in yaml or json format.
 
 ## :white_check_mark: Project Structure
 
