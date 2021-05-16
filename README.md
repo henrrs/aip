@@ -43,6 +43,8 @@ For GCP features you need to generate a [service account key](https://cloud.goog
 export GOOGLE_APPLICATION_CREDENTIALS=$PWD/your-service-key.json
 ```
 
+2. For development purposes you should also follow the instructions shown [here](https://golang.org/doc/gopath_code) in order to be able to install and test the CLI accordingly.
+
 ## :white_check_mark: Usage example
 
 
