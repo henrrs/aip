@@ -69,6 +69,22 @@ aip google create ci-cd-pipeline -c="your-file.yaml" -p="your-file.yaml"
 
 The provided files can be in yaml or json format.
 
+If you have any doubt about how a command must be executed you can just use "-h" or "--help" flag, like that:
+
+
+```bash
+aip --help
+```
+
+```bash
+aip google -h
+```
+
+```bash
+aip google create ci-cd-pipeline --help
+```
+
+
 ## :white_check_mark: Project Structure
 
     .
