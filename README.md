@@ -87,6 +87,8 @@ aip google create ci-cd-pipeline --help
 
 ## :white_check_mark: Project Structure
 
+The follow structure was adopted it. We have the cmd folder where we have our Cobra commands implemented it for CLI function. In the services/google we have the implementation of GCP services. The utils folder is used for functions that can be used in multiple contexts like for example, file reading. The structure for others providers is still not decided it.
+
     .
     ├── pkg                     
     │   ├── cmd   
