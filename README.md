@@ -18,34 +18,11 @@ Version:        | **1.0**
 
 ## :white_check_mark: Requirements
 
-1. [Cloud SDK](https://cloud.google.com/sdk)
+1. [Go](https://golang.org/doc/install)
 
-```bash
-sudo apt-get update
-wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-307.0.0-linux-x86_64.tar.gz
-tar –xvzf google-cloud-sdk-307.0.0-linux-x86_64.tar.gz
-cd google-cloud-sdk
-./install.sh
+2. [Cloud SDK](https://cloud.google.com/sdk)
 
-```
-
-After execute the above commands, it will appear the following question. Just type "N" in your terminal, as shown below:
-
-![alt text](https://vitux.com/wp-content/uploads/word-image-1355.png)
-
-After that you'll be asked to continue with the installation. Just type "Y" in your terminal, as shown below:
-
-![alt text](https://vitux.com/wp-content/uploads/word-image-1356.png)
-
-Here you'll be asked a path for bringing the Google Cloud CLIs into your enviroment. You can type your choosed path, but here we can just proceed with the default path pressing "enter", as shown below:
-
-![alt text](https://vitux.com/wp-content/uploads/word-image-1357.png)
-
-Once it's finished it, your terminal window will display the following output on it:
-
-![alt text](https://vitux.com/wp-content/uploads/word-image-1358.png)
-
-2. [Git](https://git-scm.com/about)
+3. [Git](https://git-scm.com/about)
 
 ## :white_check_mark: Features
 
