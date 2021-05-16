@@ -43,7 +43,7 @@ For GCP features you need to generate a [service account key](https://cloud.goog
 export GOOGLE_APPLICATION_CREDENTIALS=$PWD/your-service-key.json
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;Please be careful about IAM least privilege recomendations for your service account key. Be sure that you're only giving the needed permission for it. If you have any doubt about least privilege principle, take a look [here](https://cloud.google.com/iam/docs/recommender-overview).
+&nbsp;&nbsp;&nbsp;&nbsp;Please be careful about Identity Access Management (IAM) least privilege recomendations for your service account key. Be sure that you're only giving the needed permission for it. If you have any doubt about least privilege principle, take a look [here](https://cloud.google.com/iam/docs/recommender-overview).
 
 2. For development purposes you should also follow the instructions shown [here](https://golang.org/doc/gopath_code) in order to be able to install and test the CLI accordingly. 
 
