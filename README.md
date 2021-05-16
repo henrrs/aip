@@ -83,7 +83,7 @@ aip google -h
 ```bash
 aip google create ci-cd-pipeline --help
 ```
-
+On the confs folder you find an template for write your files.
 
 ## :white_check_mark: Project Structure
 
