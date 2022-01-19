@@ -18,5 +18,5 @@ package main
 import "aip/pkg/cmd"
 
 func main() {
-  cmd.Execute()
+	cmd.Execute()
 }

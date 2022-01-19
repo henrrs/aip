@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,23 +17,23 @@ limitations under the License.
 package cmd
 
 import (
-  "fmt"
-  "os"
+	"fmt"
+	"os"
 
-  homedir "github.com/mitchellh/go-homedir"
-  "github.com/spf13/cobra"
-  "github.com/spf13/viper"
+	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
-  "aip/pkg/cmd/google"
+	"aip/pkg/cmd/google"
 )
 
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command {
+var rootCmd = &cobra.Command{
 	Use:   "aip",
 	Short: "Tool for automation of infrastructure",
-	Long: `Automating Infrastructure Provisioning (AIP) is a tool for automating infrastructure in different cloud providers and also on premise.`,
+	Long:  `Automating Infrastructure Provisioning (AIP) is a tool for automating infrastructure in different cloud providers and also on premise.`,
 }
 
 func Execute() {
@@ -65,17 +65,17 @@ func init() {
 func initConfig() {
 
 	if cfgFile != "" {
-	// Use config file from the flag.
+		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-	// Find home directory.
+		// Find home directory.
 		home, err := homedir.Dir()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-	// Search config in home directory with name ".aip" (without extension).
+		// Search config in home directory with name ".aip" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigName(".aip")
 	}

@@ -23,16 +23,17 @@ func NewCreateCommand() *cobra.Command {
 
 	// createCmd represents the create command
 
-	createCmd := &cobra.Command {
+	createCmd := &cobra.Command{
 		Use:   "create",
 		Short: "Creation of infrastructure.",
-		Long: `The create command allows you to create specific elements in the selected provider and also entire processes.`,
+		Long:  `The create command allows you to create specific elements in the selected provider and also entire processes.`,
 
 		Run: func(cmd *cobra.Command, args []string) {
 
 		},
 	}
 
+	createCmd.AddCommand(NewCloudSourceRepository())
 	createCmd.AddCommand(NewCICDPipelineCommand())
 
 	return createCmd

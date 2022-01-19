@@ -2,31 +2,31 @@ package create
 
 import (
 	"fmt"
-	
+
 	"github.com/spf13/cobra"
 
 	"aip/pkg/utils"
 
-	"aip/pkg/services/google/sourcerepo"
 	"aip/pkg/services/google/cloudbuild"
+	"aip/pkg/services/google/sourcerepo"
 )
 
 type Trigger struct {
-	Name 			string
-	Description		string
-	Branch			string
-	Substitutions	[]string
+	Name          string
+	Description   string
+	Branch        string
+	Substitutions []string
 }
 
 type Repository struct {
-	Name 	string
+	Name string
 }
 
 type Pipeline struct {
-	ProjectId	string
-	Team		[]string
-	Repository	Repository
-	Trigger		Trigger
+	ProjectId  string
+	Team       []string
+	Repository Repository
+	Trigger    Trigger
 }
 
 type Config struct {
@@ -43,7 +43,7 @@ func NewConfig(fileName string) *Config {
 
 func NewCICDPipelineCommand() *cobra.Command {
 
-	cicdpipelineCmd := &cobra.Command {
+	cicdpipelineCmd := &cobra.Command{
 		Use:   "ci-cd-pipeline",
 		Short: "Continuous Integration and Continuous Deployment pipeline.",
 		Long: `This command allows you to create an entire CI/CD pipeline on Google Cloud Platform (GCP). You must provide the necessary files as parameters in order to create the desire pipeline The files can be provided in JSON or YAML extension.
@@ -53,7 +53,7 @@ func NewCICDPipelineCommand() *cobra.Command {
 			aip google create ci-cd-pipeline --config="config.yaml" --pipeline="cloudbuild.yaml" 
 
 			aip google create ci-cd-pipeline -c="config.json" --p="cloudbuild.json"
-			aip google create ci-cd-pipeline --config="config.json" --pipeline="cloudbuild.json" `, 
+			aip google create ci-cd-pipeline --config="config.json" --pipeline="cloudbuild.json" `,
 
 		Run: func(cmd *cobra.Command, args []string) {
 
@@ -80,7 +80,7 @@ func NewCICDPipelineCommand() *cobra.Command {
 			cloudbuildResources := cloudbuild.NewCloudBuildService(c.Pipeline.Trigger.Branch, c.Pipeline.Repository.Name, c.Pipeline.ProjectId, c.Pipeline.Trigger.Description, c.Pipeline.Trigger.Name, cloudBuild)
 
 			addTrigger(cloudbuildResources)
-			
+
 		},
 	}
 
@@ -103,7 +103,7 @@ func newSourceRepository(sourcerepoResources sourcerepo.ServiceResources) {
 
 		if err != nil {
 			fmt.Println("Error while creating the repository.")
-		} else{
+		} else {
 			fmt.Println("The repository was created sucessfully.")
 		}
 
