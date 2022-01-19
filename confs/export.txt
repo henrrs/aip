@@ -1,3 +1,0 @@
-You must set your service account key on the GOOGLE_APPLICATION_CREDENTIALS enviroment variable as follow:
-
-export GOOGLE_APPLICATION_CREDENTIALS=$PWD/service-account-key.json

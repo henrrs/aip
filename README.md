@@ -37,10 +37,10 @@ Version:        | **1.0**
 
 For GCP features you need to generate a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) with the necessary roles for the tool authentication with the provider. 
 
-1. Having the service account key you need to set it's path in the GOOGLE_APPLICATION_CREDENTIALS enviroment variable with the follow command:
+1. Having the service account key you need to set it's path in the setup file, on line 3, and then execute the follow:
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=$PWD/your-service-key.json
+. setup.sh
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;Please be careful about Identity Access Management (IAM) least privilege recomendations for your service account key. Be sure that you're only giving the needed permission for it. If you have any doubt about least privilege principle, take a look [here](https://cloud.google.com/iam/docs/recommender-overview).
