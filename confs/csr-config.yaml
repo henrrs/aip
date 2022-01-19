@@ -1,0 +1,4 @@
+projectId: your-project-id
+
+csr:
+    name: repository-name
