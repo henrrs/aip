@@ -1,64 +1,65 @@
 package cloudbuild
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 
+	m "aip/pkg/cmd/google/models"
 	"aip/pkg/utils"
 
 	"google.golang.org/api/cloudbuild/v1"
 )
 
 type ServiceResources struct {
-	Service 		*cloudbuild.Service	
-	BranchName 		string
-	RepoName 		string 
-	ProjectId 		string
-	ProjectNumber	string
-	ServiceAccount 	string
-	Description 	string
-	Name 			string
-	FileName 		string
+	Service        *cloudbuild.Service
+	BranchName     string
+	RepoName       string
+	ProjectId      string
+	ProjectNumber  string
+	ServiceAccount string
+	Description    string
+	Name           string
+	FileName       string
 }
 
-func NewServiceResources(service *cloudbuild.Service, resources []string) (ServiceResources) {
-	return ServiceResources {
-		Service:		service,
-		BranchName: 	resources[0],
-		RepoName: 		resources[1],
-		ProjectId: 		resources[2],
-		Description:	resources[3],
-		Name:			resources[4],
-		FileName:		resources[5],
-		ProjectNumber:	resources[6],
-		ServiceAccount:	resources[7],
+func NewServiceResources(service *cloudbuild.Service, resources []string) ServiceResources {
+	return ServiceResources{
+		Service:        service,
+		BranchName:     resources[0],
+		RepoName:       resources[1],
+		ProjectId:      resources[2],
+		Description:    resources[3],
+		Name:           resources[4],
+		FileName:       resources[5],
+		ProjectNumber:  resources[6],
+		ServiceAccount: resources[7],
 	}
 }
 
-func NewRepoSource(branchName string, repoName string, projectId string) (*cloudbuild.RepoSource) {
-	return &cloudbuild.RepoSource {
-		BranchName:	 	branchName,
-		RepoName: 		repoName,
-		ProjectId: 		projectId,
+func NewRepoSource(branchName string, repoName string, projectId string) *cloudbuild.RepoSource {
+	return &cloudbuild.RepoSource{
+		BranchName: branchName,
+		RepoName:   repoName,
+		ProjectId:  projectId,
 	}
 }
 
-func NewBuild(fileName string) (*cloudbuild.Build) {
-	b := &cloudbuild.Build{} 
+func NewBuild(fileName string) *cloudbuild.Build {
+	b := &cloudbuild.Build{}
 
 	return utils.ReadFile(fileName, b).(*cloudbuild.Build)
 }
 
-func NewBuildTrigger(description string, name string, b *cloudbuild.Build, rs *cloudbuild.RepoSource) (*cloudbuild.BuildTrigger) {
+func NewBuildTrigger(description string, name string, b *cloudbuild.Build, rs *cloudbuild.RepoSource) *cloudbuild.BuildTrigger {
 	return &cloudbuild.BuildTrigger{
-		Build: b,
-		Description: description,
-		Name: name,
+		Build:           b,
+		Description:     description,
+		Name:            name,
 		TriggerTemplate: rs,
 	}
 }
 
-func NewCloudBuildService(resources ...string) (ServiceResources) {
+func NewCloudBuildService(resources ...string) ServiceResources {
 
 	ctx := context.Background()
 	s, err := cloudbuild.NewService(ctx)
@@ -66,9 +67,9 @@ func NewCloudBuildService(resources ...string) (ServiceResources) {
 	if err != nil {
 		fmt.Println("Error creating a new cloudbuild service.")
 		fmt.Println(err)
-	} 
+	}
 
-	projectNumber := utils.GetProjectNumber(resources[2])
+	projectNumber := m.GetProjectNumber(resources[2])
 	serviceAccount := projectNumber + "@cloudbuild.gserviceaccount.com"
 
 	resources = append(resources, projectNumber)
@@ -78,7 +79,6 @@ func NewCloudBuildService(resources ...string) (ServiceResources) {
 
 	return serviceresources
 }
-
 
 func AddTrigger(serviceresources ServiceResources) (*cloudbuild.BuildTrigger, error) {
 
@@ -94,10 +94,10 @@ func AddTrigger(serviceresources ServiceResources) (*cloudbuild.BuildTrigger, er
 func AuthorizeCloudBuildServiceAccount(serviceresources ServiceResources) error {
 
 	s := utils.Script{
-		Dir:	"",
+		Dir: "",
 	}
 
-	roles := []string {
+	roles := []string{
 		"roles/run.admin",
 		"roles/iam.serviceAccountUser",
 		"roles/cloudbuild.builds.builder",
