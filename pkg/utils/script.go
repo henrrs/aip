@@ -3,30 +3,29 @@ package utils
 import (
 	"os"
 	"os/exec"
-	"strings"
 )
 
 type Script struct {
-	Cmds 	[]string
-	Dir		string
+	Cmds []string
+	Dir  string
 }
 
 func NewScript(dir string, cmds ...string) Script {
-	return Script {
-		Cmds: 	cmds,
-		Dir:	dir,
+	return Script{
+		Cmds: cmds,
+		Dir:  dir,
 	}
 }
 
 func ExecCommand(cmd string) (string, error) {
-	
-	res, err := exec.Command( "bash", "-c", cmd ).Output()
+
+	res, err := exec.Command("bash", "-c", cmd).Output()
 
 	if err != nil {
 		return "", err
 	}
 
-	r := responseToString(res)
+	r := ByteToString(res)
 
 	return r, nil
 }
@@ -37,9 +36,9 @@ func Run(script ...Script) error {
 
 		for _, c := range s.Cmds {
 
-			cmd := exec.Command( "bash", "-c", c )
+			cmd := exec.Command("bash", "-c", c)
 			err := cmd.Run()
-	
+
 			if err != nil {
 				return err
 			}
@@ -61,15 +60,30 @@ func GetCurrentDir() (string, error) {
 		return "", err
 	}
 
-	path := responseToString(p)
+	path := ByteToString(p)
 
 	return path, nil
 }
 
-func responseToString(response []byte) string {
+func Runnable(script ...Script) error {
 
-	r := string(response)
-	r = strings.TrimSuffix(r, "\n")
+	for _, s := range script {
 
-	return r
+		if s.Dir != "" {
+			os.Chdir(s.Dir)
+		}
+
+		for _, c := range s.Cmds {
+
+			cmd := exec.Command("bash", "-c", c)
+			err := cmd.Run()
+
+			if err != nil {
+				return err
+			}
+
+		}
+	}
+
+	return nil
 }

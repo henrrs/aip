@@ -56,7 +56,7 @@ func NewIamPolicy(policy *sourcerepo.Policy) *sourcerepo.SetIamPolicyRequest {
 	}
 }
 
-func NewSourceRepoService(projectId string, repoName string) ServiceResources {
+func NewSourceRepoService(projectId, repoName string) ServiceResources {
 
 	ctx := context.Background()
 	s, err := sourcerepo.NewService(ctx)
@@ -73,6 +73,28 @@ func NewSourceRepoService(projectId string, repoName string) ServiceResources {
 	serviceresources := NewServiceResources(s, project, repos, policy)
 
 	return serviceresources
+}
+
+func POCNewSourceRepoService(projectId, repoName string) ServiceResources {
+
+	ctx := context.Background()
+	s, err := sourcerepo.NewService(ctx)
+
+	project := "projects/" + projectId
+	repos := project + "/repos/" + repoName
+	policy := "roles/source.writer"
+
+	if err != nil {
+		fmt.Println("Error creating a new sourcerepo service.")
+		fmt.Println(err)
+	}
+
+	return ServiceResources{
+		Service:    s,
+		Role:       policy,
+		Project:    project,
+		Repository: repos,
+	}
 }
 
 func FindAll(serviceresources ServiceResources, projectId string) (*sourcerepo.ListReposResponse, error) {
@@ -109,7 +131,18 @@ func AddDevelopers(serviceresources ServiceResources, team []string) (*sourcerep
 	return req, err
 }
 
-func InitRepo(projectId string, reponame string) error {
+func (resources ServiceResources) POCAddDevelopers(team []string) (*sourcerepo.Policy, error) {
+
+	binding := NewBinding(resources.Role, team)
+	policy := NewPolicy(binding)
+	iampolicy := NewIamPolicy(policy)
+
+	req, err := resources.Service.Projects.Repos.SetIamPolicy(resources.Repository, iampolicy).Do()
+
+	return req, err
+}
+
+func InitRepo(projectId, reponame string) error {
 
 	p, err := utils.GetCurrentDir()
 

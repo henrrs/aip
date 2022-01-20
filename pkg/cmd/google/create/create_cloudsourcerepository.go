@@ -31,17 +31,25 @@ func NewCloudSourceRepository() *cobra.Command {
 
 			cfg := models.NewCSRConfig(fileName)
 
-			sourcerepoResources := sourcerepo.NewSourceRepoService(cfg.ProjectId, cfg.CSR.Name)
+			sourcerepoResources := sourcerepo.POCNewSourceRepoService(cfg.ProjectId, cfg.CSR.Name)
 
 			cfg.NewCloudSourceRepository(sourcerepoResources)
 
-			err := sourcerepo.InitRepo(cfg.ProjectId, cfg.CSR.Name)
+			cfg.InitCSR()
 
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				fmt.Println("The repository was initialized successfully.")
+			if cfg.CSR.Team != nil {
+
+				cfg.UpdateTeam()
+
+				req, err := sourcerepoResources.POCAddDevelopers(cfg.CSR.Team)
+
+				if err != nil {
+					fmt.Println(err, req)
+				} else {
+					fmt.Println("The developers were added sucessfully to the repository.")
+				}
 			}
+
 		},
 	}
 
