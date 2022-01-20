@@ -69,10 +69,13 @@ func NewCloudBuildService(resources ...string) ServiceResources {
 		fmt.Println(err)
 	}
 
-	projectNumber := m.GetProjectNumber(resources[2])
-	serviceAccount := projectNumber + "@cloudbuild.gserviceaccount.com"
+	p := m.NewProject(resources[2])
 
-	resources = append(resources, projectNumber)
+	p.SetProjectNumber()
+
+	serviceAccount := p.Number + "@cloudbuild.gserviceaccount.com"
+
+	resources = append(resources, p.Number)
 	resources = append(resources, serviceAccount)
 
 	serviceresources := NewServiceResources(s, resources)

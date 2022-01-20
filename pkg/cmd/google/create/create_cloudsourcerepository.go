@@ -29,9 +29,7 @@ func NewCloudSourceRepository() *cobra.Command {
 
 			fileName, _ := cmd.Flags().GetString("config")
 
-			cfg := m.NewCSRConfig(fileName)
-
-			sourcerepo := sourcerepo.NewSourceRepoResources(cfg.ProjectId, cfg.CSR.Name)
+			cfg, sourcerepo := setup(fileName)
 
 			err := execProcess(cfg, sourcerepo)
 
@@ -50,7 +48,16 @@ func NewCloudSourceRepository() *cobra.Command {
 	return csrCmd
 }
 
-func execProcess(cfg *m.CSRConfig, sourcerepo sourcerepo.ServiceResources) error {
+func setup(fileName string) (*m.CSRConfig, sourcerepo.SourceRepoResources) {
+
+	cfg := m.NewCSRConfig(fileName)
+
+	sourcerepo := sourcerepo.NewSourceRepoResources(cfg.ProjectId, cfg.CSR.Name)
+
+	return cfg, sourcerepo
+}
+
+func execProcess(cfg *m.CSRConfig, sourcerepo sourcerepo.SourceRepoResources) error {
 
 	cfg.NewCSR(sourcerepo)
 

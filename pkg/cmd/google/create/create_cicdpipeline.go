@@ -96,7 +96,7 @@ func NewCICDPipelineCommand() *cobra.Command {
 	return cicdpipelineCmd
 }
 
-func newSourceRepository(sourcerepoResources sourcerepo.ServiceResources) {
+func newSourceRepository(sourcerepoResources sourcerepo.SourceRepoResources) {
 
 	req, err := sourcerepoResources.FindByName()
 
@@ -116,7 +116,7 @@ func newSourceRepository(sourcerepoResources sourcerepo.ServiceResources) {
 
 }
 
-func addDevsToRepo(sourcerepoResources sourcerepo.ServiceResources, team []string) {
+func addDevsToRepo(sourcerepoResources sourcerepo.SourceRepoResources, team []string) {
 
 	req, err := sourcerepoResources.AddDevelopers(team)
 

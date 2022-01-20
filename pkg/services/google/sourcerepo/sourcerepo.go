@@ -7,14 +7,14 @@ import (
 	"google.golang.org/api/sourcerepo/v1"
 )
 
-type ServiceResources struct {
+type SourceRepoResources struct {
 	Service    *sourcerepo.Service
 	Project    string
 	Repository string
 	Role       string
 }
 
-func NewSourceRepoResources(projectId, repoName string) ServiceResources {
+func NewSourceRepoResources(projectId, repoName string) SourceRepoResources {
 
 	ctx := context.Background()
 	s, err := sourcerepo.NewService(ctx)
@@ -28,7 +28,7 @@ func NewSourceRepoResources(projectId, repoName string) ServiceResources {
 		fmt.Println(err)
 	}
 
-	return ServiceResources{
+	return SourceRepoResources{
 		Service:    s,
 		Role:       policy,
 		Project:    project,
@@ -67,21 +67,21 @@ func NewIamPolicy(policy *sourcerepo.Policy) *sourcerepo.SetIamPolicyRequest {
 	}
 }
 
-func (resources ServiceResources) FindAll(projectId string) (*sourcerepo.ListReposResponse, error) {
+func (resources SourceRepoResources) FindAll(projectId string) (*sourcerepo.ListReposResponse, error) {
 
 	req, err := resources.Service.Projects.Repos.List(resources.Project).Do()
 
 	return req, err
 }
 
-func (resources ServiceResources) FindByName() (*sourcerepo.Repo, error) {
+func (resources SourceRepoResources) FindByName() (*sourcerepo.Repo, error) {
 
 	req, err := resources.Service.Projects.Repos.Get(resources.Repository).Do()
 
 	return req, err
 }
 
-func (resources ServiceResources) AddRepository() (*sourcerepo.Repo, error) {
+func (resources SourceRepoResources) AddRepository() (*sourcerepo.Repo, error) {
 
 	repo := NewRepo(resources.Repository)
 
@@ -90,7 +90,7 @@ func (resources ServiceResources) AddRepository() (*sourcerepo.Repo, error) {
 	return req, err
 }
 
-func (resources ServiceResources) AddDevelopers(team []string) (*sourcerepo.Policy, error) {
+func (resources SourceRepoResources) AddDevelopers(team []string) (*sourcerepo.Policy, error) {
 
 	binding := NewBinding(resources.Role, team)
 	policy := NewPolicy(binding)

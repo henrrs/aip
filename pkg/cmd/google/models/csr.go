@@ -27,7 +27,7 @@ func NewCSRConfig(fileName string) *CSRConfig {
 	return c
 }
 
-func (cfg CSRConfig) NewCSR(sourcerepo sourcerepo.ServiceResources) error {
+func (cfg *CSRConfig) NewCSR(sourcerepo sourcerepo.SourceRepoResources) error {
 
 	req, err := sourcerepo.FindByName()
 
@@ -51,7 +51,7 @@ func (cfg CSRConfig) NewCSR(sourcerepo sourcerepo.ServiceResources) error {
 	return nil
 }
 
-func (cfg CSRConfig) InitCSR() error {
+func (cfg *CSRConfig) InitCSR() error {
 
 	p, err := utils.GetCurrentDir()
 
@@ -83,11 +83,9 @@ func (cfg CSRConfig) InitCSR() error {
 	return nil
 }
 
-func (cfg CSRConfig) UpdateTeam() *CSRConfig {
+func (cfg *CSRConfig) UpdateTeam() {
 
 	for i := 0; i < len(cfg.CSR.Team); i++ {
 		cfg.CSR.Team[i] = "user:" + cfg.CSR.Team[i]
 	}
-
-	return &cfg
 }

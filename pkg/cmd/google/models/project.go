@@ -6,9 +6,27 @@ import (
 	"aip/pkg/utils"
 )
 
-func GetProjectNumber(projectId string) string {
+type Project struct {
+	Id     string
+	Number string
+}
 
-	cmd := "gcloud projects describe " + projectId + " --format \"value(projectNumber)\""
+func NewProject(projectId string) Project {
+	return Project{
+		Id: projectId,
+	}
+}
+
+func (p *Project) SetProjectNumber() {
+
+	n := p.describeProjectNumber()
+
+	p.Number = n
+}
+
+func (p Project) describeProjectNumber() string {
+
+	cmd := "gcloud projects describe " + p.Id + " --format \"value(projectNumber)\""
 
 	r, err := utils.ExecCmdWithOutput(cmd)
 
