@@ -8,6 +8,8 @@ import (
 	"aip/pkg/services/google/sourcerepo"
 )
 
+// CSR means Cloud Source Repositories
+
 type CSR struct {
 	Name string
 	Team []string
@@ -25,16 +27,19 @@ func NewCSRConfig(fileName string) *CSRConfig {
 	return c
 }
 
-func (cfg CSRConfig) NewCloudSourceRepository(sourcerepoResources sourcerepo.ServiceResources) {
+func (cfg CSRConfig) NewCSR(sourcerepo sourcerepo.ServiceResources) error {
 
-	req, err := sourcerepo.FindByName(sourcerepoResources)
+	req, err := sourcerepo.FindByName()
 
 	if err != nil {
 
-		_, err = sourcerepo.AddRepository(sourcerepoResources)
+		_, err = sourcerepo.AddRepository()
 
 		if err != nil {
 			fmt.Println("Error while creating the repository.")
+
+			return err
+
 		} else {
 			fmt.Println("The repository was created sucessfully.")
 		}
@@ -42,6 +47,8 @@ func (cfg CSRConfig) NewCloudSourceRepository(sourcerepoResources sourcerepo.Ser
 	} else {
 		fmt.Println(req, err)
 	}
+
+	return nil
 }
 
 func (cfg CSRConfig) InitCSR() error {
@@ -67,7 +74,7 @@ func (cfg CSRConfig) InitCSR() error {
 	s3 := utils.NewScript(p,
 		"rm -rf "+repoPath)
 
-	err = utils.Runnable(s1, s2, s3)
+	err = utils.Run(s1, s2, s3)
 
 	if err != nil {
 		return err

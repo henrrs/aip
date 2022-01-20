@@ -6,19 +6,40 @@ import (
 )
 
 type Script struct {
-	Cmds []string
 	Dir  string
+	Cmds []string
 }
 
 func NewScript(dir string, cmds ...string) Script {
 	return Script{
-		Cmds: cmds,
 		Dir:  dir,
+		Cmds: cmds,
 	}
 }
 
-func ExecCommand(cmd string) (string, error) {
+func Run(script ...Script) error {
 
+	for _, s := range script {
+
+		if s.Dir != "" {
+			os.Chdir(s.Dir)
+		}
+
+		for _, c := range s.Cmds {
+
+			err := ExecCmdWithoutOutput(c)
+
+			if err != nil {
+				return err
+			}
+
+		}
+	}
+
+	return nil
+}
+
+func ExecCmdWithOutput(cmd string) (string, error) {
 	res, err := exec.Command("bash", "-c", cmd).Output()
 
 	if err != nil {
@@ -30,27 +51,11 @@ func ExecCommand(cmd string) (string, error) {
 	return r, nil
 }
 
-func Run(script ...Script) error {
+func ExecCmdWithoutOutput(command string) error {
+	cmd := exec.Command("bash", "-c", command)
+	err := cmd.Run()
 
-	for _, s := range script {
-
-		for _, c := range s.Cmds {
-
-			cmd := exec.Command("bash", "-c", c)
-			err := cmd.Run()
-
-			if err != nil {
-				return err
-			}
-
-		}
-
-		if s.Dir != "" {
-			os.Chdir(s.Dir)
-		}
-	}
-
-	return nil
+	return err
 }
 
 func GetCurrentDir() (string, error) {
@@ -63,27 +68,4 @@ func GetCurrentDir() (string, error) {
 	path := ByteToString(p)
 
 	return path, nil
-}
-
-func Runnable(script ...Script) error {
-
-	for _, s := range script {
-
-		if s.Dir != "" {
-			os.Chdir(s.Dir)
-		}
-
-		for _, c := range s.Cmds {
-
-			cmd := exec.Command("bash", "-c", c)
-			err := cmd.Run()
-
-			if err != nil {
-				return err
-			}
-
-		}
-	}
-
-	return nil
 }

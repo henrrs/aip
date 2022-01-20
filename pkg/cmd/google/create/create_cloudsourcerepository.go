@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"aip/pkg/cmd/google/models"
+	m "aip/pkg/cmd/google/models"
 	"aip/pkg/services/google/sourcerepo"
 )
 
@@ -29,25 +29,16 @@ func NewCloudSourceRepository() *cobra.Command {
 
 			fileName, _ := cmd.Flags().GetString("config")
 
-			cfg := models.NewCSRConfig(fileName)
+			cfg := m.NewCSRConfig(fileName)
 
-			sourcerepoResources := sourcerepo.POCNewSourceRepoService(cfg.ProjectId, cfg.CSR.Name)
+			sourcerepo := sourcerepo.NewSourceRepoResources(cfg.ProjectId, cfg.CSR.Name)
 
-			cfg.NewCloudSourceRepository(sourcerepoResources)
+			err := execProcess(cfg, sourcerepo)
 
-			cfg.InitCSR()
-
-			if cfg.CSR.Team != nil {
-
-				cfg.UpdateTeam()
-
-				req, err := sourcerepoResources.POCAddDevelopers(cfg.CSR.Team)
-
-				if err != nil {
-					fmt.Println(err, req)
-				} else {
-					fmt.Println("The developers were added sucessfully to the repository.")
-				}
+			if err != nil {
+				fmt.Println("One or more errors have occurred during the process.")
+			} else {
+				fmt.Println("Process finished.")
 			}
 
 		},
@@ -57,4 +48,35 @@ func NewCloudSourceRepository() *cobra.Command {
 	csrCmd.MarkPersistentFlagRequired("config")
 
 	return csrCmd
+}
+
+func execProcess(cfg *m.CSRConfig, sourcerepo sourcerepo.ServiceResources) error {
+
+	cfg.NewCSR(sourcerepo)
+
+	err := cfg.InitCSR()
+
+	if err != nil {
+		fmt.Println("An error has occurred during CSR initialization.")
+	} else {
+		fmt.Println("CSR was initialized sucessfuly.")
+
+		if cfg.CSR.Team != nil {
+
+			cfg.UpdateTeam()
+
+			req, err := sourcerepo.AddDevelopers(cfg.CSR.Team)
+
+			if err != nil {
+				fmt.Println(err, req)
+
+				return err
+
+			} else {
+				fmt.Println("The developers were added sucessfully to the repository.")
+			}
+		}
+	}
+
+	return nil
 }

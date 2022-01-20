@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"aip/pkg/cmd/google/models"
 	"aip/pkg/utils"
 
 	"aip/pkg/services/google/cloudbuild"
@@ -36,7 +37,7 @@ type Config struct {
 func NewConfig(fileName string) *Config {
 	c := &Config{}
 	c = utils.ReadFile(fileName, c).(*Config)
-	c.Pipeline.Team = utils.UpdateTeam(c.Pipeline.Team)
+	//c.Pipeline.Team = utils.UpdateTeam(c.Pipeline.Team)
 
 	return c
 }
@@ -64,12 +65,14 @@ func NewCICDPipelineCommand() *cobra.Command {
 
 			c := NewConfig(fileName)
 
-			sourcerepoResources := sourcerepo.NewSourceRepoService(c.Pipeline.ProjectId, c.Pipeline.Repository.Name)
+			sourcerepoResources := sourcerepo.NewSourceRepoResources(c.Pipeline.ProjectId, c.Pipeline.Repository.Name)
+
+			csrCfg := models.NewCSRConfig(fileName)
 
 			newSourceRepository(sourcerepoResources)
 			addDevsToRepo(sourcerepoResources, c.Pipeline.Team)
 
-			err := sourcerepo.InitRepo(c.Pipeline.ProjectId, c.Pipeline.Repository.Name)
+			err := csrCfg.InitCSR()
 
 			if err != nil {
 				fmt.Println(err)
@@ -95,11 +98,11 @@ func NewCICDPipelineCommand() *cobra.Command {
 
 func newSourceRepository(sourcerepoResources sourcerepo.ServiceResources) {
 
-	req, err := sourcerepo.FindByName(sourcerepoResources)
+	req, err := sourcerepoResources.FindByName()
 
 	if err != nil {
 
-		req, err = sourcerepo.AddRepository(sourcerepoResources)
+		req, err = sourcerepoResources.AddRepository()
 
 		if err != nil {
 			fmt.Println("Error while creating the repository.")
@@ -115,7 +118,7 @@ func newSourceRepository(sourcerepoResources sourcerepo.ServiceResources) {
 
 func addDevsToRepo(sourcerepoResources sourcerepo.ServiceResources, team []string) {
 
-	req, err := sourcerepo.AddDevelopers(sourcerepoResources, team)
+	req, err := sourcerepoResources.AddDevelopers(team)
 
 	if err != nil {
 		fmt.Println(err, req)
