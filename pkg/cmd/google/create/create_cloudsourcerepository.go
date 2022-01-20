@@ -52,7 +52,13 @@ func setup(fileName string) (*m.CSRConfig, sourcerepo.SourceRepoResources) {
 
 	cfg := m.NewCSRConfig(fileName)
 
-	sourcerepo := sourcerepo.NewSourceRepoResources(cfg.ProjectId, cfg.CSR.Name)
+	csrName := cfg.GetName()
+	project := cfg.GetProject()
+	projectId := project.GetId()
+
+	fmt.Println(csrName)
+
+	sourcerepo := sourcerepo.NewSourceRepoResources(projectId, csrName)
 
 	return cfg, sourcerepo
 }
@@ -65,14 +71,17 @@ func execProcess(cfg *m.CSRConfig, sourcerepo sourcerepo.SourceRepoResources) er
 
 	if err != nil {
 		fmt.Println("An error has occurred during CSR initialization.")
+		fmt.Println(err)
 	} else {
 		fmt.Println("CSR was initialized sucessfuly.")
 
-		if cfg.CSR.Team != nil {
+		if cfg.HasTeam() {
 
 			cfg.UpdateTeam()
 
-			req, err := sourcerepo.AddDevelopers(cfg.CSR.Team)
+			team := cfg.GetTeam()
+
+			req, err := sourcerepo.AddDevelopers(team)
 
 			if err != nil {
 				fmt.Println(err, req)

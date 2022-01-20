@@ -6,25 +6,33 @@ import (
 	"aip/pkg/utils"
 )
 
-type Project struct {
+type project struct {
 	Id     string
 	Number string
 }
 
-func NewProject(projectId string) Project {
-	return Project{
+func NewProject(projectId string) project {
+	return project{
 		Id: projectId,
 	}
 }
 
-func (p *Project) SetProjectNumber() {
+func (p project) GetId() string {
+	return p.Id
+}
+
+func (p project) GetNumber() string {
+	return p.Number
+}
+
+func (p *project) SetProjectNumber() {
 
 	n := p.describeProjectNumber()
 
 	p.Number = n
 }
 
-func (p Project) describeProjectNumber() string {
+func (p project) describeProjectNumber() string {
 
 	cmd := "gcloud projects describe " + p.Id + " --format \"value(projectNumber)\""
 

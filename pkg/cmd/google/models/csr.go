@@ -10,14 +10,15 @@ import (
 
 // CSR means Cloud Source Repositories
 
-type CSR struct {
-	Name string
-	Team []string
+type csr struct {
+	Name   string
+	Branch string
+	Team   []string
 }
 
 type CSRConfig struct {
-	CSR       CSR
-	ProjectId string
+	CSR     csr
+	Project project
 }
 
 func NewCSRConfig(fileName string) *CSRConfig {
@@ -38,8 +39,6 @@ func (cfg *CSRConfig) NewCSR(sourcerepo sourcerepo.SourceRepoResources) error {
 		if err != nil {
 			fmt.Println("Error while creating the repository.")
 
-			return err
-
 		} else {
 			fmt.Println("The repository was created sucessfully.")
 		}
@@ -51,7 +50,27 @@ func (cfg *CSRConfig) NewCSR(sourcerepo sourcerepo.SourceRepoResources) error {
 	return nil
 }
 
-func (cfg *CSRConfig) InitCSR() error {
+func (cfg CSRConfig) GetName() string {
+	return cfg.CSR.Name
+}
+
+func (cfg CSRConfig) GetBranch() string {
+	return cfg.CSR.Branch
+}
+
+func (cfg CSRConfig) GetTeam() []string {
+	return cfg.CSR.Team
+}
+
+func (cfg CSRConfig) GetProject() project {
+	return cfg.Project
+}
+
+func (cfg CSRConfig) HasTeam() bool {
+	return cfg.CSR.Team != nil
+}
+
+func (cfg CSRConfig) InitCSR() error {
 
 	p, err := utils.GetCurrentDir()
 
@@ -59,11 +78,15 @@ func (cfg *CSRConfig) InitCSR() error {
 		fmt.Println(err)
 	}
 
-	repoPath := p + "/" + cfg.CSR.Name
+	csrName := cfg.GetName()
+	csrProject := cfg.GetProject()
+	projectId := csrProject.GetId()
+
+	repoPath := p + "/" + csrName
 
 	s1 := utils.NewScript("",
 		"gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS",
-		"gcloud source repos clone "+cfg.CSR.Name+" --project=\""+cfg.ProjectId+"\" ")
+		"gcloud source repos clone "+csrName+" --project=\""+projectId+"\" ")
 
 	s2 := utils.NewScript(repoPath,
 		"touch README.MD",
