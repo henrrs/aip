@@ -29,9 +29,9 @@ func NewCloudSourceRepository() *cobra.Command {
 
 			fileName, _ := cmd.Flags().GetString("config")
 
-			cfg, sourcerepo := setup(fileName)
+			cfg, sourcerepo := setupCsr(fileName)
 
-			err := execProcess(cfg, sourcerepo)
+			err := execCsrProcess(cfg, sourcerepo)
 
 			if err != nil {
 				fmt.Println("One or more errors have occurred during the process.")
@@ -48,7 +48,7 @@ func NewCloudSourceRepository() *cobra.Command {
 	return csrCmd
 }
 
-func setup(fileName string) (*m.CSRConfig, sourcerepo.SourceRepoResources) {
+func setupCsr(fileName string) (*m.CSRConfig, sourcerepo.SourceRepoResources) {
 
 	cfg := m.NewCSRConfig(fileName)
 
@@ -63,7 +63,7 @@ func setup(fileName string) (*m.CSRConfig, sourcerepo.SourceRepoResources) {
 	return cfg, sourcerepo
 }
 
-func execProcess(cfg *m.CSRConfig, sourcerepo sourcerepo.SourceRepoResources) error {
+func execCsrProcess(cfg *m.CSRConfig, sourcerepo sourcerepo.SourceRepoResources) error {
 
 	cfg.NewCSR(sourcerepo)
 

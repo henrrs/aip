@@ -3,7 +3,10 @@ package create
 import (
 	"fmt"
 
+	m "aip/pkg/cmd/google/models"
+
 	"github.com/spf13/cobra"
+	"google.golang.org/api/cloudbuild/v1"
 )
 
 func NewCloudBuildTrigger() *cobra.Command {
@@ -26,9 +29,9 @@ func NewCloudBuildTrigger() *cobra.Command {
 
 			fileName, _ := cmd.Flags().GetString("config")
 
-			cfg, cloudbuild := setup(fileName)
+			cfg, cloudbuild := setupCbt(fileName)
 
-			err := execProcess(cfg, cloudbuild)
+			err := execCbtProcess(cfg, cloudbuild)
 
 			if err != nil {
 				fmt.Println("One or more errors have occurred during the process.")
@@ -43,4 +46,13 @@ func NewCloudBuildTrigger() *cobra.Command {
 	cbtCmd.MarkPersistentFlagRequired("config")
 
 	return cbtCmd
+}
+
+func setupCbt(fileName string) (*m.TriggerConfig, *cloudbuild.BuildTrigger) {
+	return nil, nil
+}
+
+func execCbtProcess(*m.TriggerConfig, *cloudbuild.BuildTrigger) error {
+
+	return nil
 }
