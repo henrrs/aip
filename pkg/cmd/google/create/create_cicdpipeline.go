@@ -50,10 +50,10 @@ func NewCICDPipelineCommand() *cobra.Command {
 		Long: `This command allows you to create an entire CI/CD pipeline on Google Cloud Platform (GCP). You must provide the necessary files as parameters in order to create the desire pipeline The files can be provided in JSON or YAML extension.
 		
 		Example: 
-			aip google create ci-cd-pipeline -c="config.yaml" --p="cloudbuild.yaml"
+			aip google create ci-cd-pipeline -c="config.yaml" -p="cloudbuild.yaml"
 			aip google create ci-cd-pipeline --config="config.yaml" --pipeline="cloudbuild.yaml" 
 
-			aip google create ci-cd-pipeline -c="config.json" --p="cloudbuild.json"
+			aip google create ci-cd-pipeline -c="config.json" -p="cloudbuild.json"
 			aip google create ci-cd-pipeline --config="config.json" --pipeline="cloudbuild.json" `,
 
 		Run: func(cmd *cobra.Command, args []string) {
@@ -90,8 +90,7 @@ func NewCICDPipelineCommand() *cobra.Command {
 	cicdpipelineCmd.PersistentFlags().StringP("config", "c", "", "Possible values: your-file.yaml, your-file.json")
 	cicdpipelineCmd.MarkPersistentFlagRequired("config")
 
-	cicdpipelineCmd.PersistentFlags().StringP("pipeline", "p", "", "Possible values: your-file.yaml, your-file.json")
-	cicdpipelineCmd.MarkPersistentFlagRequired("pipeline")
+	cicdpipelineCmd.PersistentFlags().StringP("steps", "s", "", "Possible values: your-file.yaml, your-file.json")
 
 	return cicdpipelineCmd
 }

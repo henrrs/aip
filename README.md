@@ -26,7 +26,9 @@ Version:        | **1.0**
 
 ## :white_check_mark: Features
 
-- [x] Continuous Integration and Continuous Deployment (CI/CD) Pipeline creation (GCP)
+- [x] Creation of Cloud Source Repositories (CSR) on Google Cloud Platform (GCP)
+- [x] Creation of Cloud Build Triggers (CBT) on Google Cloud Platform (GCP)
+- [x] Creation of Continuous Integration and Continuous Deployment (CI/CD) Pipeline on Google Cloud Platform (GCP)
 
 ## :white_check_mark: Pendency
 

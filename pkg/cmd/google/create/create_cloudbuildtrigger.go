@@ -17,19 +17,20 @@ func NewCloudBuildTrigger() *cobra.Command {
 		Long: `This command allows you to create an Cloud Builg Trigger on Google Cloud Platform (GCP). You must provide the necessary configuration file as parameter in order to create the trigger. The file must be provided in JSON or YAML extension.
 		
 		Example: 
-			aip google create cbt -c="config.yaml"
-			aip google create cbt --config="config.yaml"
+			aip google create cbt -c="config.yaml -s="cloudbuild.yaml""
+			aip google create cbt --config="config.yaml" --steps="cloudbuild.yaml"
 
-			aip google create cbt -c="config.json"
-			aip google create cbt --config="config.json"  `,
+			aip google create cbt -c="config.json -s="cloudbuild.json""
+			aip google create cbt --config="config.json" --steps="cloudbuild.json"`,
 
 		Run: func(cmd *cobra.Command, args []string) {
 
 			fmt.Println("Creating trigger...")
 
 			fileName, _ := cmd.Flags().GetString("config")
+			steps, _ := cmd.Flags().GetString("steps")
 
-			cfg, cloudbuild := setupCbt(fileName)
+			cfg, cloudbuild := setupCbt(fileName, steps)
 
 			err := execCbtProcess(cfg, cloudbuild)
 
@@ -45,27 +46,32 @@ func NewCloudBuildTrigger() *cobra.Command {
 	cbtCmd.PersistentFlags().StringP("config", "c", "", "Possible values: your-file.yaml, your-file.json")
 	cbtCmd.MarkPersistentFlagRequired("config")
 
+	cbtCmd.PersistentFlags().StringP("steps", "s", "", "Possible values: your-file.yaml, your-file.json")
+
 	return cbtCmd
 }
 
-func setupCbt(fileName string) (*m.CbtConfig, cloudbuild.CloudBuildTriggerResources) {
+func setupCbt(fileName, steps string) (*m.CbtConfig, cloudbuild.CloudBuildTriggerResources) {
+
+	var cloudbuildResources cloudbuild.CloudBuildTriggerResources
 
 	cbt := m.NewCbtConfig(fileName)
 
 	csr := cbt.GetCsr()
-	repoName := csr.GetCsrName()
-	branchName := csr.GetCsrBranch()
+	repoName, branchName := csr.GetCsrName(), csr.GetCsrBranch()
 
 	project := cbt.GetProject()
 	project.SetNumber()
-	projectId := project.GetId()
-	projectNumber := project.GetNumber()
+	projectId, projectNumber := project.GetId(), project.GetNumber()
 
 	trigger := cbt.GetTrigger()
-	triggerName := trigger.GetName()
-	triggerDescription := trigger.Description
+	triggerName, triggerDescription := trigger.GetName(), trigger.GetDescription()
 
-	cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, branchName, repoName, projectId, projectNumber, "")
+	if steps != "" {
+		cloudbuildResources = cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, branchName, repoName, projectId, projectNumber, steps)
+	} else {
+		cloudbuildResources = cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, branchName, repoName, projectId, projectNumber, "")
+	}
 
 	return cbt, cloudbuildResources
 }
