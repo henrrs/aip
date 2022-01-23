@@ -11,9 +11,17 @@ type project struct {
 	Number string
 }
 
-func NewProject(projectId string) project {
-	return project{
-		Id: projectId,
+type Project struct {
+	Project project
+}
+
+func NewProject(projectId string) Project {
+
+	p := new(project)
+	p.SetId(projectId)
+
+	return Project{
+		Project: *p,
 	}
 }
 
@@ -21,15 +29,27 @@ func (p project) GetId() string {
 	return p.Id
 }
 
+func (p *project) SetId(id string) {
+	p.Id = id
+}
+
 func (p project) GetNumber() string {
 	return p.Number
 }
 
-func (p *project) SetProjectNumber() {
+func (p *project) SetNumber() {
 
 	n := p.describeProjectNumber()
 
 	p.Number = n
+}
+
+func (p Project) GetProject() project {
+	return p.Project
+}
+
+func (p *Project) SetProject(project project) {
+	p.Project = project
 }
 
 func (p project) describeProjectNumber() string {

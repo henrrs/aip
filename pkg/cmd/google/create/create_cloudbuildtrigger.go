@@ -4,15 +4,15 @@ import (
 	"fmt"
 
 	m "aip/pkg/cmd/google/models"
+	"aip/pkg/cmd/google/services/cloudbuild"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/api/cloudbuild/v1"
 )
 
 func NewCloudBuildTrigger() *cobra.Command {
 
 	cbtCmd := &cobra.Command{
-		Use:   "csr",
+		Use:   "cbt",
 		Short: "Cloud Build Trigger",
 		Long: `This command allows you to create an Cloud Builg Trigger on Google Cloud Platform (GCP). You must provide the necessary configuration file as parameter in order to create the trigger. The file must be provided in JSON or YAML extension.
 		
@@ -48,11 +48,31 @@ func NewCloudBuildTrigger() *cobra.Command {
 	return cbtCmd
 }
 
-func setupCbt(fileName string) (*m.TriggerConfig, *cloudbuild.BuildTrigger) {
-	return nil, nil
+func setupCbt(fileName string) (*m.CbtConfig, cloudbuild.CloudBuildTriggerResources) {
+
+	cbt := m.NewCbtConfig(fileName)
+
+	csr := cbt.GetCsr()
+	repoName := csr.GetCsrName()
+	branchName := csr.GetCsrBranch()
+
+	project := cbt.GetProject()
+	project.SetNumber()
+	projectId := project.GetId()
+	projectNumber := project.GetNumber()
+
+	trigger := cbt.GetTrigger()
+	triggerName := trigger.GetName()
+	triggerDescription := trigger.Description
+
+	cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, branchName, repoName, projectId, projectNumber, "")
+
+	return cbt, cloudbuildResources
 }
 
-func execCbtProcess(*m.TriggerConfig, *cloudbuild.BuildTrigger) error {
+func execCbtProcess(cfg *m.CbtConfig, cloudbuild cloudbuild.CloudBuildTriggerResources) error {
+
+	cfg.NewCBT(cloudbuild)
 
 	return nil
 }

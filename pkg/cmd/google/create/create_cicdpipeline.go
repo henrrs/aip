@@ -8,8 +8,8 @@ import (
 	"aip/pkg/cmd/google/models"
 	"aip/pkg/utils"
 
-	"aip/pkg/services/google/cloudbuild"
-	"aip/pkg/services/google/sourcerepo"
+	"aip/pkg/cmd/google/services/cloudbuild"
+	"aip/pkg/cmd/google/services/sourcerepo"
 )
 
 type Trigger struct {
@@ -80,7 +80,7 @@ func NewCICDPipelineCommand() *cobra.Command {
 				fmt.Println("The repository was initialized successfully.")
 			}
 
-			cloudbuildResources := cloudbuild.NewCloudBuildService(c.Pipeline.Trigger.Branch, c.Pipeline.Repository.Name, c.Pipeline.ProjectId, c.Pipeline.Trigger.Description, c.Pipeline.Trigger.Name, cloudBuild)
+			cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(c.Pipeline.Trigger.Branch, c.Pipeline.Repository.Name, c.Pipeline.ProjectId, "", c.Pipeline.Trigger.Description, c.Pipeline.Trigger.Name, cloudBuild)
 
 			addTrigger(cloudbuildResources)
 
@@ -127,9 +127,9 @@ func addDevsToRepo(sourcerepoResources sourcerepo.SourceRepoResources, team []st
 	}
 }
 
-func addTrigger(cloudbuildResources cloudbuild.ServiceResources) {
+func addTrigger(cloudbuildResources cloudbuild.CloudBuildTriggerResources) {
 
-	req, err := cloudbuild.AddTrigger(cloudbuildResources)
+	req, err := cloudbuildResources.AddTrigger()
 
 	if err != nil {
 		fmt.Println(req, err)
@@ -137,7 +137,7 @@ func addTrigger(cloudbuildResources cloudbuild.ServiceResources) {
 		fmt.Println("The trigger was created sucessfully.")
 	}
 
-	err = cloudbuild.AuthorizeCloudBuildServiceAccount(cloudbuildResources)
+	err = cloudbuildResources.AuthorizeCloudBuildServiceAccount()
 
 	if err != nil {
 		fmt.Println(err)

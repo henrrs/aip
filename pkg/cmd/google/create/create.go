@@ -33,6 +33,7 @@ func NewCreateCommand() *cobra.Command {
 		},
 	}
 
+	createCmd.AddCommand(NewCloudBuildTrigger())
 	createCmd.AddCommand(NewCloudSourceRepository())
 	createCmd.AddCommand(NewCICDPipelineCommand())
 

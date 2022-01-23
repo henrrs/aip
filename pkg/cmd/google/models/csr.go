@@ -3,9 +3,8 @@ package models
 import (
 	"fmt"
 
+	"aip/pkg/cmd/google/services/sourcerepo"
 	"aip/pkg/utils"
-
-	"aip/pkg/services/google/sourcerepo"
 )
 
 // CSR means Cloud Source Repositories
@@ -28,7 +27,7 @@ func NewCSRConfig(fileName string) *CSRConfig {
 	return c
 }
 
-func (cfg *CSRConfig) NewCSR(sourcerepo sourcerepo.SourceRepoResources) error {
+func (cfg CSRConfig) NewCSR(sourcerepo sourcerepo.SourceRepoResources) error {
 
 	req, err := sourcerepo.FindByName()
 
@@ -54,8 +53,16 @@ func (cfg CSRConfig) GetName() string {
 	return cfg.CSR.Name
 }
 
+func (csr csr) GetCsrName() string {
+	return csr.Name
+}
+
 func (cfg CSRConfig) GetBranch() string {
 	return cfg.CSR.Branch
+}
+
+func (csr csr) GetCsrBranch() string {
+	return csr.Branch
 }
 
 func (cfg CSRConfig) GetTeam() []string {
@@ -111,4 +118,21 @@ func (cfg *CSRConfig) UpdateTeam() {
 	for i := 0; i < len(cfg.CSR.Team); i++ {
 		cfg.CSR.Team[i] = "user:" + cfg.CSR.Team[i]
 	}
+}
+
+func (cfg CSRConfig) AddTeam(sourcerepo sourcerepo.SourceRepoResources) error {
+
+	team := cfg.GetTeam()
+
+	req, err := sourcerepo.AddDevelopers(team)
+
+	if err != nil {
+		fmt.Println(err, req)
+
+		return err
+	}
+
+	fmt.Println("The developers were added sucessfully to the repository.")
+
+	return nil
 }

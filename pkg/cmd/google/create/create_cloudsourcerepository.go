@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	m "aip/pkg/cmd/google/models"
-	"aip/pkg/services/google/sourcerepo"
+	"aip/pkg/cmd/google/services/sourcerepo"
 )
 
 func NewCloudSourceRepository() *cobra.Command {
@@ -56,8 +56,6 @@ func setupCsr(fileName string) (*m.CSRConfig, sourcerepo.SourceRepoResources) {
 	project := cfg.GetProject()
 	projectId := project.GetId()
 
-	fmt.Println(csrName)
-
 	sourcerepo := sourcerepo.NewSourceRepoResources(projectId, csrName)
 
 	return cfg, sourcerepo
@@ -79,17 +77,10 @@ func execCsrProcess(cfg *m.CSRConfig, sourcerepo sourcerepo.SourceRepoResources)
 
 			cfg.UpdateTeam()
 
-			team := cfg.GetTeam()
-
-			req, err := sourcerepo.AddDevelopers(team)
+			err = cfg.AddTeam(sourcerepo)
 
 			if err != nil {
-				fmt.Println(err, req)
-
 				return err
-
-			} else {
-				fmt.Println("The developers were added sucessfully to the repository.")
 			}
 		}
 	}
