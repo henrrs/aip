@@ -69,6 +69,10 @@ func (cfg CSRConfig) GetTeam() []string {
 	return cfg.CSR.Team
 }
 
+func (csr csr) GetCsrTeam() []string {
+	return csr.Team
+}
+
 func (cfg CSRConfig) GetProject() project {
 	return cfg.Project
 }

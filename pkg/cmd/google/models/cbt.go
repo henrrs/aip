@@ -26,12 +26,15 @@ func NewCbtConfig(fileName string) *CbtConfig {
 	return c
 }
 
-func (cfg CbtConfig) NewCBT(cloudbuildResources cloudbuild.CloudBuildTriggerResources) {
+func (cfg CbtConfig) NewCBT(cloudbuildResources cloudbuild.CloudBuildTriggerResources) error {
 
 	req, err := cloudbuildResources.AddTrigger()
 
 	if err != nil {
 		fmt.Println(req, err)
+
+		return err
+
 	} else {
 		fmt.Println("The trigger was created sucessfully.")
 	}
@@ -40,9 +43,14 @@ func (cfg CbtConfig) NewCBT(cloudbuildResources cloudbuild.CloudBuildTriggerReso
 
 	if err != nil {
 		fmt.Println(err)
+
+		return err
+
 	} else {
 		fmt.Println("Cloud build service account is authorized to trigger deploys.")
 	}
+
+	return nil
 }
 
 func (cbt CbtConfig) GetCsr() csr {

@@ -78,7 +78,7 @@ func setupCbt(fileName, steps string) (*m.CbtConfig, cloudbuild.CloudBuildTrigge
 
 func execCbtProcess(cfg *m.CbtConfig, cloudbuild cloudbuild.CloudBuildTriggerResources) error {
 
-	cfg.NewCBT(cloudbuild)
+	err := cfg.NewCBT(cloudbuild)
 
-	return nil
+	return err
 }

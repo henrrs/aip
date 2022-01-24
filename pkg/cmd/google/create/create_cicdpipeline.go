@@ -5,42 +5,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"aip/pkg/cmd/google/models"
-	"aip/pkg/utils"
+	m "aip/pkg/cmd/google/models"
 
 	"aip/pkg/cmd/google/services/cloudbuild"
 	"aip/pkg/cmd/google/services/sourcerepo"
 )
-
-type Trigger struct {
-	Name          string
-	Description   string
-	Branch        string
-	Substitutions []string
-}
-
-type Repository struct {
-	Name string
-}
-
-type Pipeline struct {
-	ProjectId  string
-	Team       []string
-	Repository Repository
-	Trigger    Trigger
-}
-
-type Config struct {
-	Pipeline Pipeline
-}
-
-func NewConfig(fileName string) *Config {
-	c := &Config{}
-	c = utils.ReadFile(fileName, c).(*Config)
-	//c.Pipeline.Team = utils.UpdateTeam(c.Pipeline.Team)
-
-	return c
-}
 
 func NewCICDPipelineCommand() *cobra.Command {
 
@@ -50,29 +19,44 @@ func NewCICDPipelineCommand() *cobra.Command {
 		Long: `This command allows you to create an entire CI/CD pipeline on Google Cloud Platform (GCP). You must provide the necessary files as parameters in order to create the desire pipeline The files can be provided in JSON or YAML extension.
 		
 		Example: 
-			aip google create ci-cd-pipeline -c="config.yaml" -p="cloudbuild.yaml"
-			aip google create ci-cd-pipeline --config="config.yaml" --pipeline="cloudbuild.yaml" 
+			aip google create ci-cd-pipeline -c="config.yaml" -s="cloudbuild.yaml"
+			aip google create ci-cd-pipeline --config="config.yaml" --steps="cloudbuild.yaml" 
 
-			aip google create ci-cd-pipeline -c="config.json" -p="cloudbuild.json"
-			aip google create ci-cd-pipeline --config="config.json" --pipeline="cloudbuild.json" `,
+			aip google create ci-cd-pipeline -c="config.json" -s="cloudbuild.json"
+			aip google create ci-cd-pipeline --config="config.json" --steps="cloudbuild.json" `,
 
 		Run: func(cmd *cobra.Command, args []string) {
 
 			fmt.Println("Creating pipeline...")
 
 			fileName, _ := cmd.Flags().GetString("config")
-			cloudBuild, _ := cmd.Flags().GetString("pipeline")
+			steps, _ := cmd.Flags().GetString("steps")
 
-			c := NewConfig(fileName)
+			pipeline := m.NewCiCdPipeline(fileName)
 
-			sourcerepoResources := sourcerepo.NewSourceRepoResources(c.Pipeline.ProjectId, c.Pipeline.Repository.Name)
+			project := pipeline.GetProject()
+			project.SetNumber()
+			projectId, projectNumber := project.GetId(), project.GetNumber()
 
-			csrCfg := models.NewCSRConfig(fileName)
+			csr := pipeline.GetCsr()
+			trigger := pipeline.GetTrigger()
+
+			csrName, csrBranch, team := csr.GetCsrName(), csr.GetCsrBranch(), csr.GetCsrTeam()
+
+			triggerName, triggerDescription := trigger.GetName(), trigger.GetDescription()
+
+			sourcerepoResources := sourcerepo.NewSourceRepoResources(projectId, csrName)
+
+			csrCfg := m.NewCSRConfig(fileName)
 
 			newSourceRepository(sourcerepoResources)
-			addDevsToRepo(sourcerepoResources, c.Pipeline.Team)
+			addDevsToRepo(sourcerepoResources, team)
 
 			err := csrCfg.InitCSR()
+
+			if csrCfg.HasTeam() {
+				csrCfg.UpdateTeam()
+			}
 
 			if err != nil {
 				fmt.Println(err)
@@ -80,7 +64,7 @@ func NewCICDPipelineCommand() *cobra.Command {
 				fmt.Println("The repository was initialized successfully.")
 			}
 
-			cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(c.Pipeline.Trigger.Branch, c.Pipeline.Repository.Name, c.Pipeline.ProjectId, "", c.Pipeline.Trigger.Description, c.Pipeline.Trigger.Name, cloudBuild)
+			cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, csrBranch, csrName, projectId, projectNumber, steps)
 
 			addTrigger(cloudbuildResources)
 
