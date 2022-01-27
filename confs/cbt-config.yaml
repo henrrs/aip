@@ -1,8 +1,0 @@
-project:
-    id: your-project-id
-csr:
-    name: repository-name
-    branch: any
-trigger:
-    name: triggers name
-    description: a brief description for your trigger

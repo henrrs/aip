@@ -26,6 +26,12 @@ func NewCbtConfig(fileName string) *CbtConfig {
 	return c
 }
 
+func NewCBTConfigWithoutParameters() *CbtConfig {
+	c := new(CbtConfig)
+
+	return c
+}
+
 func (cfg CbtConfig) NewCBT(cloudbuildResources cloudbuild.CloudBuildTriggerResources) error {
 
 	req, err := cloudbuildResources.AddTrigger()

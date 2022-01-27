@@ -32,41 +32,15 @@ func NewCICDPipelineCommand() *cobra.Command {
 			fileName, _ := cmd.Flags().GetString("config")
 			steps, _ := cmd.Flags().GetString("steps")
 
-			pipeline := m.NewCiCdPipeline(fileName)
+			pipeline, sourcerepo, cloudbuild := setupCiCd(fileName, steps)
 
-			project := pipeline.GetProject()
-			project.SetNumber()
-			projectId, projectNumber := project.GetId(), project.GetNumber()
-
-			csr := pipeline.GetCsr()
-			trigger := pipeline.GetTrigger()
-
-			csrName, csrBranch, team := csr.GetCsrName(), csr.GetCsrBranch(), csr.GetCsrTeam()
-
-			triggerName, triggerDescription := trigger.GetName(), trigger.GetDescription()
-
-			sourcerepoResources := sourcerepo.NewSourceRepoResources(projectId, csrName)
-
-			csrCfg := m.NewCSRConfig(fileName)
-
-			newSourceRepository(sourcerepoResources)
-			addDevsToRepo(sourcerepoResources, team)
-
-			err := csrCfg.InitCSR()
-
-			if csrCfg.HasTeam() {
-				csrCfg.UpdateTeam()
-			}
+			err := execCiCdProcess(pipeline, sourcerepo, cloudbuild)
 
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println("One or more errors have occurred during the process.")
 			} else {
-				fmt.Println("The repository was initialized successfully.")
+				fmt.Println("Process finished.")
 			}
-
-			cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, csrBranch, csrName, projectId, projectNumber, steps)
-
-			addTrigger(cloudbuildResources)
 
 		},
 	}
@@ -79,52 +53,61 @@ func NewCICDPipelineCommand() *cobra.Command {
 	return cicdpipelineCmd
 }
 
-func newSourceRepository(sourcerepoResources sourcerepo.SourceRepoResources) {
+func setupCiCd(fileName, steps string) (*m.CiCdPipeline, sourcerepo.SourceRepoResources, cloudbuild.CloudBuildTriggerResources) {
+	pipeline := m.NewCiCdPipeline(fileName)
 
-	req, err := sourcerepoResources.FindByName()
+	project := pipeline.GetProject()
+	project.SetNumber()
+	projectId, projectNumber := project.GetId(), project.GetNumber()
 
-	if err != nil {
+	csr := pipeline.GetCsr()
+	trigger := pipeline.GetTrigger()
 
-		req, err = sourcerepoResources.AddRepository()
+	csrName, csrBranch := csr.GetCsrName(), csr.GetCsrBranch()
 
-		if err != nil {
-			fmt.Println("Error while creating the repository.")
-		} else {
-			fmt.Println("The repository was created sucessfully.")
-		}
+	triggerName, triggerDescription := trigger.GetName(), trigger.GetDescription()
 
-	} else {
-		fmt.Println(req, err)
-	}
+	sourcerepoResources := sourcerepo.NewSourceRepoResources(projectId, csrName)
+
+	cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, csrBranch, csrName, projectId, projectNumber, steps)
+
+	return pipeline, sourcerepoResources, cloudbuildResources
 
 }
 
-func addDevsToRepo(sourcerepoResources sourcerepo.SourceRepoResources, team []string) {
+func execCiCdProcess(pipeline *m.CiCdPipeline, sourcerepo sourcerepo.SourceRepoResources, cloudbuild cloudbuild.CloudBuildTriggerResources) error {
 
-	req, err := sourcerepoResources.AddDevelopers(team)
+	csrCfg, cbtCfg := m.NewCSRConfigWithoutParameters(), m.NewCBTConfigWithoutParameters()
 
-	if err != nil {
-		fmt.Println(err, req)
-	} else {
-		fmt.Println("The developers were added sucessfully to the repository.")
-	}
-}
+	csrCfg.NewCSR(sourcerepo)
 
-func addTrigger(cloudbuildResources cloudbuild.CloudBuildTriggerResources) {
-
-	req, err := cloudbuildResources.AddTrigger()
+	err := csrCfg.InitCSR()
 
 	if err != nil {
-		fmt.Println(req, err)
-	} else {
-		fmt.Println("The trigger was created sucessfully.")
-	}
-
-	err = cloudbuildResources.AuthorizeCloudBuildServiceAccount()
-
-	if err != nil {
+		fmt.Println("An error has occurred during CSR initialization.")
 		fmt.Println(err)
 	} else {
-		fmt.Println("Cloud build service account is authorized to trigger deploys.")
+		fmt.Println("CSR was initialized sucessfuly.")
+
+		csr := pipeline.GetCsr()
+
+		if csr.CsrHasTeam() {
+
+			csr.UpdateCSRTeam()
+
+			err = csrCfg.AddTeam(sourcerepo)
+
+			if err != nil {
+				return err
+			}
+		}
 	}
+
+	err = cbtCfg.NewCBT(cloudbuild)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
