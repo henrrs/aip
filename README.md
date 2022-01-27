@@ -96,10 +96,9 @@ The follow structure was adopted it. We have the cmd folder where we have our Co
     │   ├── cmd   
     |   |   └── google
     |   |       └── create
-    │   ├── services     
-    |   |   └── google
-    |   |       ├── cloudbuild
-    |   |       ├── sourcerepo
-    |   |       └── ...
+    |   |       └── services
+    |   |         └── cloudbuild
+    |   |         └── sourcerepo
+    |   |         └── ...
     │   └── utils                
     └── ...
