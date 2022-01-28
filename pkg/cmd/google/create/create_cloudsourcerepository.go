@@ -53,8 +53,7 @@ func setupCsr(fileName string) (*m.CSRConfig, sourcerepo.SourceRepoResources) {
 	cfg := m.NewCSRConfig(fileName)
 
 	csrName := cfg.GetName()
-	project := cfg.GetProject()
-	projectId := project.GetId()
+	projectId := cfg.GetProject().GetId()
 
 	sourcerepo := sourcerepo.NewSourceRepoResources(projectId, csrName)
 

@@ -53,7 +53,7 @@ func NewCICDPipelineCommand() *cobra.Command {
 	return cicdpipelineCmd
 }
 
-func setupCiCd(fileName, steps string) (*m.CiCdPipeline, sourcerepo.SourceRepoResources, cloudbuild.CloudBuildTriggerResources) {
+func setupCiCd(fileName, steps string) (*m.CiCdPipelineConfig, sourcerepo.SourceRepoResources, cloudbuild.CloudBuildTriggerResources) {
 	pipeline := m.NewCiCdPipeline(fileName)
 
 	project := pipeline.GetProject()
@@ -63,7 +63,16 @@ func setupCiCd(fileName, steps string) (*m.CiCdPipeline, sourcerepo.SourceRepoRe
 	csr := pipeline.GetCsr()
 	trigger := pipeline.GetTrigger()
 
-	csrName, csrBranch := csr.GetCsrName(), csr.GetCsrBranch()
+	csrName, csrBranch := csr.GetName(), csr.GetBranch()
+
+	csrCfg := m.NewCSRConfigWithoutParameters()
+
+	csrCfg.SetCsr(csr)
+	csrCfg.SetProject(project)
+
+	cbtCfg := m.NewCBTConfigWithoutParameters()
+
+	cicdpipelineCfg := m.NewCiCdPipelineConfig(*csrCfg, *cbtCfg)
 
 	triggerName, triggerDescription := trigger.GetName(), trigger.GetDescription()
 
@@ -71,13 +80,14 @@ func setupCiCd(fileName, steps string) (*m.CiCdPipeline, sourcerepo.SourceRepoRe
 
 	cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, csrBranch, csrName, projectId, projectNumber, steps)
 
-	return pipeline, sourcerepoResources, cloudbuildResources
+	return cicdpipelineCfg, sourcerepoResources, cloudbuildResources
 
 }
 
-func execCiCdProcess(pipeline *m.CiCdPipeline, sourcerepo sourcerepo.SourceRepoResources, cloudbuild cloudbuild.CloudBuildTriggerResources) error {
+func execCiCdProcess(pipelineCfg *m.CiCdPipelineConfig, sourcerepo sourcerepo.SourceRepoResources, cloudbuild cloudbuild.CloudBuildTriggerResources) error {
 
-	csrCfg, cbtCfg := m.NewCSRConfigWithoutParameters(), m.NewCBTConfigWithoutParameters()
+	csrCfg := pipelineCfg.GetCSRConfig()
+	cbtCfg := pipelineCfg.GetCBTConfig()
 
 	csrCfg.NewCSR(sourcerepo)
 
@@ -89,11 +99,9 @@ func execCiCdProcess(pipeline *m.CiCdPipeline, sourcerepo sourcerepo.SourceRepoR
 	} else {
 		fmt.Println("CSR was initialized sucessfuly.")
 
-		csr := pipeline.GetCsr()
+		if csrCfg.HasTeam() {
 
-		if csr.CsrHasTeam() {
-
-			csr.UpdateCSRTeam()
+			csrCfg.UpdateTeam()
 
 			err = csrCfg.AddTeam(sourcerepo)
 

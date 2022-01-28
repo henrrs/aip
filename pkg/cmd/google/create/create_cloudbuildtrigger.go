@@ -51,14 +51,14 @@ func NewCloudBuildTrigger() *cobra.Command {
 	return cbtCmd
 }
 
-func setupCbt(fileName, steps string) (*m.CbtConfig, cloudbuild.CloudBuildTriggerResources) {
+func setupCbt(fileName, steps string) (*m.CBTConfig, cloudbuild.CloudBuildTriggerResources) {
 
 	var cloudbuildResources cloudbuild.CloudBuildTriggerResources
 
-	cbt := m.NewCbtConfig(fileName)
+	cbt := m.NewCBTConfig(fileName)
 
 	csr := cbt.GetCsr()
-	repoName, branchName := csr.GetCsrName(), csr.GetCsrBranch()
+	repoName, branchName := csr.GetName(), csr.GetBranch()
 
 	project := cbt.GetProject()
 	project.SetNumber()
@@ -76,7 +76,7 @@ func setupCbt(fileName, steps string) (*m.CbtConfig, cloudbuild.CloudBuildTrigge
 	return cbt, cloudbuildResources
 }
 
-func execCbtProcess(cfg *m.CbtConfig, cloudbuild cloudbuild.CloudBuildTriggerResources) error {
+func execCbtProcess(cfg *m.CBTConfig, cloudbuild cloudbuild.CloudBuildTriggerResources) error {
 
 	err := cfg.NewCBT(cloudbuild)
 

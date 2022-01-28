@@ -11,18 +11,12 @@ type project struct {
 	Number string
 }
 
-type Project struct {
-	Project project
-}
-
-func NewProject(projectId string) Project {
+func NewProject(projectId string) *project {
 
 	p := new(project)
 	p.SetId(projectId)
 
-	return Project{
-		Project: *p,
-	}
+	return p
 }
 
 func (p project) GetId() string {
@@ -42,14 +36,6 @@ func (p *project) SetNumber() {
 	n := p.describeProjectNumber()
 
 	p.Number = n
-}
-
-func (p Project) GetProject() project {
-	return p.Project
-}
-
-func (p *Project) SetProject(project project) {
-	p.Project = project
 }
 
 func (p project) describeProjectNumber() string {
