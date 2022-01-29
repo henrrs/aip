@@ -1,12 +1,13 @@
 package utils
 
 import (
-	"fmt"
-	"strings"
-	"reflect"
-	"errors"
-	"io/ioutil"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"reflect"
+	"strings"
+
 	"sigs.k8s.io/yaml"
 )
 
@@ -50,9 +51,17 @@ func fileExtension(fileName string) (string, error) {
 
 	if s == 2 {
 		return p[1], nil
-	} 
+	}
 
 	return "", errors.New("File name is out of pattern.")
+}
+
+func ByteToString(response []byte) string {
+
+	r := string(response)
+	r = strings.TrimSuffix(r, "\n")
+
+	return r
 }
 
 func readFileContent(fileName string) ([]byte, error) {

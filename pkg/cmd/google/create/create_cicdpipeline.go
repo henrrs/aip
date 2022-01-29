@@ -2,143 +2,120 @@ package create
 
 import (
 	"fmt"
-	
+
 	"github.com/spf13/cobra"
 
-	"aip/pkg/utils"
+	m "aip/pkg/cmd/google/models"
 
-	"aip/pkg/services/google/sourcerepo"
-	"aip/pkg/services/google/cloudbuild"
+	"aip/pkg/cmd/google/services/cloudbuild"
+	"aip/pkg/cmd/google/services/sourcerepo"
 )
-
-type Trigger struct {
-	Name 			string
-	Description		string
-	Branch			string
-	Substitutions	[]string
-}
-
-type Repository struct {
-	Name 	string
-}
-
-type Pipeline struct {
-	ProjectId	string
-	Team		[]string
-	Repository	Repository
-	Trigger		Trigger
-}
-
-type Config struct {
-	Pipeline Pipeline
-}
-
-func NewConfig(fileName string) *Config {
-	c := &Config{}
-	c = utils.ReadFile(fileName, c).(*Config)
-	c.Pipeline.Team = utils.UpdateTeam(c.Pipeline.Team)
-
-	return c
-}
 
 func NewCICDPipelineCommand() *cobra.Command {
 
-	cicdpipelineCmd := &cobra.Command {
+	cicdpipelineCmd := &cobra.Command{
 		Use:   "ci-cd-pipeline",
 		Short: "Continuous Integration and Continuous Deployment pipeline.",
 		Long: `This command allows you to create an entire CI/CD pipeline on Google Cloud Platform (GCP). You must provide the necessary files as parameters in order to create the desire pipeline The files can be provided in JSON or YAML extension.
 		
 		Example: 
-			aip google create ci-cd-pipeline -c="config.yaml" --p="cloudbuild.yaml"
-			aip google create ci-cd-pipeline --config="config.yaml" --pipeline="cloudbuild.yaml" 
+			aip google create ci-cd-pipeline -c="config.yaml" -s="cloudbuild.yaml"
+			aip google create ci-cd-pipeline --config="config.yaml" --steps="cloudbuild.yaml" 
 
-			aip google create ci-cd-pipeline -c="config.json" --p="cloudbuild.json"
-			aip google create ci-cd-pipeline --config="config.json" --pipeline="cloudbuild.json" `, 
+			aip google create ci-cd-pipeline -c="config.json" -s="cloudbuild.json"
+			aip google create ci-cd-pipeline --config="config.json" --steps="cloudbuild.json" `,
 
 		Run: func(cmd *cobra.Command, args []string) {
 
 			fmt.Println("Creating pipeline...")
 
 			fileName, _ := cmd.Flags().GetString("config")
-			cloudBuild, _ := cmd.Flags().GetString("pipeline")
+			steps, _ := cmd.Flags().GetString("steps")
 
-			c := NewConfig(fileName)
+			pipeline, sourcerepo, cloudbuild := setupCiCd(fileName, steps)
 
-			sourcerepoResources := sourcerepo.NewSourceRepoService(c.Pipeline.ProjectId, c.Pipeline.Repository.Name)
-
-			newSourceRepository(sourcerepoResources)
-			addDevsToRepo(sourcerepoResources, c.Pipeline.Team)
-
-			err := sourcerepo.InitRepo(c.Pipeline.ProjectId, c.Pipeline.Repository.Name)
+			err := execCiCdProcess(pipeline, sourcerepo, cloudbuild)
 
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println("One or more errors have occurred during the process.")
 			} else {
-				fmt.Println("The repository was initialized successfully.")
+				fmt.Println("Process finished.")
 			}
 
-			cloudbuildResources := cloudbuild.NewCloudBuildService(c.Pipeline.Trigger.Branch, c.Pipeline.Repository.Name, c.Pipeline.ProjectId, c.Pipeline.Trigger.Description, c.Pipeline.Trigger.Name, cloudBuild)
-
-			addTrigger(cloudbuildResources)
-			
 		},
 	}
 
 	cicdpipelineCmd.PersistentFlags().StringP("config", "c", "", "Possible values: your-file.yaml, your-file.json")
 	cicdpipelineCmd.MarkPersistentFlagRequired("config")
 
-	cicdpipelineCmd.PersistentFlags().StringP("pipeline", "p", "", "Possible values: your-file.yaml, your-file.json")
-	cicdpipelineCmd.MarkPersistentFlagRequired("pipeline")
+	cicdpipelineCmd.PersistentFlags().StringP("steps", "s", "", "Possible values: your-file.yaml, your-file.json")
 
 	return cicdpipelineCmd
 }
 
-func newSourceRepository(sourcerepoResources sourcerepo.ServiceResources) {
+func setupCiCd(fileName, steps string) (*m.CiCdPipelineConfig, sourcerepo.SourceRepoResources, cloudbuild.CloudBuildTriggerResources) {
+	pipeline := m.NewCiCdPipeline(fileName)
 
-	req, err := sourcerepo.FindByName(sourcerepoResources)
+	project := pipeline.GetProject()
+	project.SetNumber()
+	projectId, projectNumber := project.GetId(), project.GetNumber()
 
-	if err != nil {
+	csr := pipeline.GetCsr()
+	trigger := pipeline.GetTrigger()
 
-		req, err = sourcerepo.AddRepository(sourcerepoResources)
+	csrName, csrBranch := csr.GetName(), csr.GetBranch()
 
-		if err != nil {
-			fmt.Println("Error while creating the repository.")
-		} else{
-			fmt.Println("The repository was created sucessfully.")
-		}
+	csrCfg := m.NewCSRConfigWithoutParameters()
 
-	} else {
-		fmt.Println(req, err)
-	}
+	csrCfg.SetCsr(csr)
+	csrCfg.SetProject(project)
+
+	cbtCfg := m.NewCBTConfigWithoutParameters()
+
+	cicdpipelineCfg := m.NewCiCdPipelineConfig(*csrCfg, *cbtCfg)
+
+	triggerName, triggerDescription := trigger.GetName(), trigger.GetDescription()
+
+	sourcerepoResources := sourcerepo.NewSourceRepoResources(projectId, csrName)
+
+	cloudbuildResources := cloudbuild.NewCloudBuildTriggerResources(triggerName, triggerDescription, csrBranch, csrName, projectId, projectNumber, steps)
+
+	return cicdpipelineCfg, sourcerepoResources, cloudbuildResources
 
 }
 
-func addDevsToRepo(sourcerepoResources sourcerepo.ServiceResources, team []string) {
+func execCiCdProcess(pipelineCfg *m.CiCdPipelineConfig, sourcerepo sourcerepo.SourceRepoResources, cloudbuild cloudbuild.CloudBuildTriggerResources) error {
 
-	req, err := sourcerepo.AddDevelopers(sourcerepoResources, team)
+	csrCfg := pipelineCfg.GetCSRConfig()
+	cbtCfg := pipelineCfg.GetCBTConfig()
 
-	if err != nil {
-		fmt.Println(err, req)
-	} else {
-		fmt.Println("The developers were added sucessfully to the repository.")
-	}
-}
+	csrCfg.NewCSR(sourcerepo)
 
-func addTrigger(cloudbuildResources cloudbuild.ServiceResources) {
-
-	req, err := cloudbuild.AddTrigger(cloudbuildResources)
+	err := csrCfg.InitCSR()
 
 	if err != nil {
-		fmt.Println(req, err)
-	} else {
-		fmt.Println("The trigger was created sucessfully.")
-	}
-
-	err = cloudbuild.AuthorizeCloudBuildServiceAccount(cloudbuildResources)
-
-	if err != nil {
+		fmt.Println("An error has occurred during CSR initialization.")
 		fmt.Println(err)
 	} else {
-		fmt.Println("Cloud build service account is authorized to trigger deploys.")
+		fmt.Println("CSR was initialized sucessfuly.")
+
+		if csrCfg.HasTeam() {
+
+			csrCfg.UpdateTeam()
+
+			err = csrCfg.AddTeam(sourcerepo)
+
+			if err != nil {
+				return err
+			}
+		}
 	}
+
+	err = cbtCfg.NewCBT(cloudbuild)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
