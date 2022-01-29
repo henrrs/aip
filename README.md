@@ -47,19 +47,13 @@ For GCP features you need to generate a [service account key](https://cloud.goog
 
 ## :white_check_mark: Usage example
 
-1. Once you clone the repository you can run the CLI in two ways, the first one:
+1. Once you clone the repository and run the setup configuration file you can run the CLI in two ways, the first one:
 
 ```bash
 go run main.go google create ci-cd-pipeline -c="your-file.yaml" -p="your-file.yaml"
 ```
 
-Or if you configure correctly go environment variables, you can install the CLI as follow:
-
-```bash
-go install aip
-```
-
-And run as:
+Or run as:
 
 ```bash
 aip google create ci-cd-pipeline -c="your-file.yaml" -p="your-file.yaml"
