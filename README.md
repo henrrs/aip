@@ -39,7 +39,7 @@ Version:        | **1.0**
 
 For GCP features you need to generate a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) with the necessary roles for the tool authentication with the provider. 
 
-1. Having the service account key you need to set it's path in the setup file, on line 3, and then execute the follow:
+1. Once you have the service account key you need to set it's path in the setup file, on line 3, and then execute the follow:
 
 ```bash
 . setup.sh
