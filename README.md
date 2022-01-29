@@ -37,17 +37,13 @@ Version:        | **1.0**
 
 ## :white_check_mark: How it works
 
-For GCP features you need to generate a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) with the necessary roles for the tool authentication with the provider. 
-
-1. Once you have the service account key you need to set it's path in the setup file, on line 3, and then execute the follow:
+For GCP features you need to generate a [service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) with the necessary roles for the tool authentication with the provider. Once you have the service account key you need to set it's path in the setup file, on line 3, and then execute the follow:
 
 ```bash
 . setup.sh
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;Please be careful about Identity Access Management (IAM) least privilege recomendations for your service account key. Be sure that you're only giving the needed permission for it. If you have any doubt about least privilege principle, take a look [here](https://cloud.google.com/iam/docs/recommender-overview).
-
-2. For development purposes you should also follow the instructions shown [here](https://golang.org/doc/gopath_code) in order to be able to install and test the CLI accordingly. 
 
 ## :white_check_mark: Usage example
 
