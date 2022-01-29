@@ -13,8 +13,8 @@ Automating Infrastructure Provisioning (AIP) it's a CLI tool that is been develo
 | <!-- --> | <!-- --> | 
 --------------- |  ---------------
 First Launch:   | **2021-05-16**    
-Last Revision:  | **2021-05-16**    
-Version:        | **1.0**
+Last Revision:  | **2022-01-29**    
+Version:        | **1.1**
 
 ## :white_check_mark: Requirements
 
@@ -47,7 +47,7 @@ For GCP features you need to generate a [service account key](https://cloud.goog
 
 ## :white_check_mark: Usage example
 
-1. Once you clone the repository and run the setup configuration file you can run the CLI in two ways, the first one:
+Once you clone the repository and run the setup configuration file you can run the CLI in two ways, the first one:
 
 ```bash
 go run main.go google create ci-cd-pipeline -c="your-file.yaml" -p="your-file.yaml"
